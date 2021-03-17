@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Zig User Map</title>
+  <link rel="stylesheet" href="dist/leaflet.css" />
+  <script src="dist/leaflet.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .leaflet-popup-content {
+      text-align: center;
+    }
+
+    .leaflet-popup-content h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0.5rem;
+    }
+
+    #contribute {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      z-index: 1000;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="map"
+    class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom">
+    <div class="leaflet-control-container">
+      <div class="leaflet-top leaflet-right">
+        <div class="leaflet-control-attribution leaflet-control">
+          <a href="https://github.com/zig-community/user-map" title="Contribute to this map">⚡️ Contribute ⚡️</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    fetch("data/users.json")
+      .then(response => response.json())
+      .then((data) => {
+        var map = L.map('map').setView([0.0, 0.0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        for (const user of data) {
+          var html = '<h1>' + escape(user.nick) + '</h1>';
+          if (user.links) {
+            var first = true;
+            for (const title in user.links) {
+              if (!first) {
+                html += '<br>';
+              }
+              html += '<a target="_blank" href="' + user.links[title] + '">' + escape(title) + '</a>';
+              first = false;
+            }
+          }
+          L.marker(user.coordinates).addTo(map).bindPopup(html);
+        }
+      });
+  </script>
+</body>
+
+</html>
