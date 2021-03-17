@@ -51,7 +51,8 @@
     <div class="leaflet-control-container">
       <div class="leaflet-top leaflet-right">
         <div class="leaflet-control-attribution leaflet-control">
-          <a href="https://github.com/zig-community/user-map" title="Contribute to this map">⚡️ Contribute ⚡️</a>
+          <span id="user-count">0</span> users are already registered | <a
+            href="https://github.com/zig-community/user-map" title="Contribute to this map">⚡️ Contribute ⚡️</a>
         </div>
       </div>
     </div>
@@ -80,6 +81,8 @@
           }
           L.marker(user.coordinates).addTo(map).bindPopup(html);
         }
+
+        document.getElementById('user-count').innerText = String(data.length);
       });
   </script>
 </body>
