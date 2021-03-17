@@ -67,14 +67,14 @@
         }).addTo(map);
 
         for (const user of data) {
-          var html = '<h1>' + escape(user.nick) + '</h1>';
+          var html = '<h1>' + user.nick + '</h1>';
           if (user.links) {
             var first = true;
             for (const title in user.links) {
               if (!first) {
                 html += '<br>';
               }
-              html += '<a target="_blank" href="' + user.links[title] + '">' + escape(title) + '</a>';
+              html += '<a target="_blank" href="' + user.links[title] + '">' + title + '</a>';
               first = false;
             }
           }
