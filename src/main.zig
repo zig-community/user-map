@@ -41,5 +41,5 @@ pub fn main() anyerror!void {
     }
     try writer.writeAll("]");
 
-    try std.fs.cwd().writeFile("data/users.json", string_buffer.items);
+    try std.fs.cwd().writeFile("website/users.json", string_buffer.items);
 }
