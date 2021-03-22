@@ -1,0 +1,11 @@
+{
+  "nick": "cricket",
+  "coordinates": [
+    34.12,
+    -118.12
+  ],
+  "links": {
+    "Website": "https://cro.wtf",
+    "SourceHut": "https://sr.ht/~cricket"
+  }
+}
