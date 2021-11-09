@@ -17,11 +17,15 @@
       height: 100%;
       margin: 0;
       padding: 0;
+      display: flex;
     }
 
     #map {
-      width: 100%;
-      height: 100%;
+      /* position: fixed; */
+      /* left: 0; */
+      /* width: 100%; */
+      /* height: 100%; */
+      flex: 1.0;
     }
 
     .leaflet-popup-content {
@@ -42,6 +46,44 @@
       z-index: 1000;
     }
 
+    #userlist {
+      /* position: fixed; */
+      /* top: 0; */
+      /* left: 0; */
+      z-index: 900;
+      width: 0em;
+      height: 100%;
+
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      transition: width 0.5s ease-out;
+      padding-left: 24px;
+
+      background: url(chevron-left.svg) no-repeat;
+      background-position: left;
+      background-color: #CCC;
+      border-left: 1px solid #BBB;
+    }
+    #userlist:hover {
+      width: 15em;
+      overflow-y: scroll;
+    }
+
+    #userlist li {
+      margin: 0;
+      padding: 0.2em;
+      background-color: #CCC;
+      padding-left: 0.4em;
+      padding-right: 0.4em;
+      border-top-left-radius: 0.4em;
+      border-bottom-left-radius: 0.4em;
+    }
+    #userlist li:hover {
+      background-color: #FFF;
+    }
+
   </style>
 </head>
 
@@ -57,6 +99,7 @@
       </div>
     </div>
   </div>
+  <ul id="userlist"></ul>
   <script>
     fetch("users.json")
       .then(response => response.json())
@@ -66,6 +109,9 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        const user_to_marker= {}
+        const nicknames = []
 
         for (const user of data) {
           var html = '<h1>' + user.nick + '</h1>';
@@ -79,10 +125,31 @@
               first = false;
             }
           }
-          L.marker(user.coordinates).addTo(map).bindPopup(html);
+          const marker = L.marker(user.coordinates).addTo(map).bindPopup(html);
+          
+          user_to_marker[user.nick] = marker;
+          nicknames.push(user.nick)
         }
 
         document.getElementById('user-count').innerText = String(data.length);
+
+        nicknames.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase());
+        });
+
+        let userlist = document.getElementById('userlist');
+        for (const nick of nicknames) {
+          
+          var child = document.createElement('li');
+          child.innerText = nick;
+          child.addEventListener('mouseenter', function() {
+            user_to_marker[nick].openPopup();
+          });
+          child.addEventListener('mouseleave', function() {
+            user_to_marker[nick].closePopup();
+          });
+          userlist.appendChild(child);
+        }
       });
   </script>
 </body>
