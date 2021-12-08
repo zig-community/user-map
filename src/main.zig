@@ -7,7 +7,7 @@ pub fn main() anyerror!void {
     var source_files = try std.fs.cwd().openDir("people", .{ .iterate = true });
     defer source_files.close();
 
-    var string_buffer = std.ArrayList(u8).init(&gpa.allocator);
+    var string_buffer = std.ArrayList(u8).init(gpa.allocator());
     defer string_buffer.deinit();
 
     var writer = string_buffer.writer();
@@ -20,13 +20,13 @@ pub fn main() anyerror!void {
         if (entry.kind != .File)
             return error.InvalidFile;
 
-        var arena = std.heap.ArenaAllocator.init(&gpa.allocator);
+        var arena = std.heap.ArenaAllocator.init(gpa.allocator());
         defer arena.deinit();
 
-        var contents = try source_files.readFileAlloc(&arena.allocator, entry.name, 1024);
-        defer arena.allocator.free(contents);
+        var contents = try source_files.readFileAlloc(arena.allocator(), entry.name, 1024);
+        defer arena.allocator().free(contents);
 
-        var parser = std.json.Parser.init(&arena.allocator, false);
+        var parser = std.json.Parser.init(arena.allocator(), false);
         defer parser.deinit();
 
         var tree = try parser.parse(contents);
