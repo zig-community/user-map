@@ -20,6 +20,8 @@ pub fn main() anyerror!void {
         if (entry.kind != .File)
             return error.InvalidFile;
 
+        errdefer |e| std.log.err("failed to parse {s}: {s}", .{ entry.name, e });
+
         var arena = std.heap.ArenaAllocator.init(gpa.allocator());
         defer arena.deinit();
 
