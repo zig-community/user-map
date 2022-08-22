@@ -4,7 +4,7 @@ pub fn main() anyerror!void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
 
-    var source_files = try std.fs.cwd().openDir("people", .{ .iterate = true });
+    var source_files = try std.fs.cwd().openIterableDir("people", .{});
     defer source_files.close();
 
     var string_buffer = std.ArrayList(u8).init(gpa.allocator());
@@ -20,12 +20,12 @@ pub fn main() anyerror!void {
         if (entry.kind != .File)
             return error.InvalidFile;
 
-        errdefer |e| std.log.err("failed to parse {s}: {s}", .{ entry.name, e });
+        errdefer |e| std.log.err("failed to parse {s}: {!}", .{ entry.name, e });
 
         var arena = std.heap.ArenaAllocator.init(gpa.allocator());
         defer arena.deinit();
 
-        var contents = try source_files.readFileAlloc(arena.allocator(), entry.name, 1024);
+        var contents = try source_files.dir.readFileAlloc(arena.allocator(), entry.name, 1024);
         defer arena.allocator().free(contents);
 
         var parser = std.json.Parser.init(arena.allocator(), false);
