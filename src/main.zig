@@ -17,7 +17,7 @@ pub fn main() anyerror!void {
     var first = true;
     var iter = source_files.iterate();
     while (try iter.next()) |entry| {
-        if (entry.kind != .File)
+        if (entry.kind != .file)
             return error.InvalidFile;
 
         errdefer |e| std.log.err("failed to parse {s}: {!}", .{ entry.name, e });
@@ -28,7 +28,7 @@ pub fn main() anyerror!void {
         var contents = try source_files.dir.readFileAlloc(arena.allocator(), entry.name, 1024);
         defer arena.allocator().free(contents);
 
-        var parser = std.json.Parser.init(arena.allocator(), false);
+        var parser = std.json.Parser.init(arena.allocator(), .alloc_if_needed);
         defer parser.deinit();
 
         var tree = try parser.parse(contents);
