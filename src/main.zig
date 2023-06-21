@@ -28,18 +28,15 @@ pub fn main() anyerror!void {
         var contents = try source_files.dir.readFileAlloc(arena.allocator(), entry.name, 1024);
         defer arena.allocator().free(contents);
 
-        var parser = std.json.Parser.init(arena.allocator(), .alloc_if_needed);
-        defer parser.deinit();
-
-        var tree = try parser.parse(contents);
-        defer tree.deinit();
+        var parsed = try std.json.parseFromSlice(std.json.Value, arena.allocator(), contents, .{});
+        defer parsed.deinit();
 
         defer first = false;
         if (!first) {
             try writer.writeAll(",");
         }
 
-        try tree.root.jsonStringify(.{}, writer);
+        try parsed.value.jsonStringify(.{}, writer);
     }
     try writer.writeAll("]");
 
