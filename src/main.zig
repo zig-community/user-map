@@ -36,7 +36,7 @@ pub fn main() anyerror!void {
             try writer.writeAll(",");
         }
 
-        try parsed.value.jsonStringify(.{}, writer);
+        try std.json.stringify(parsed.value, .{}, writer);
     }
     try writer.writeAll("]");
 
