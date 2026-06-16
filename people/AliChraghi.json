@@ -1,11 +1,8 @@
 {
-  "nick": "AliChraghi",
-  "coordinates": [
-    37.54887,
-    45.08445
-  ],
+  "nick": "Ali Cheraghi",
+  "coordinates": [ 35.699730, 51.337513 ],
   "links": {
-    "Website": "https://chraghi.ir",
+    "Website": "https://alichraghi.github.io",
     "GitHub": "https://github.com/alichraghi"
   }
 }
